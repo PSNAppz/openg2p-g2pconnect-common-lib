@@ -1,8 +1,13 @@
-from pydantic import AliasChoices, BaseModel, Field
+from datetime import datetime
 from enum import Enum
+from typing import Optional
+from pydantic import AliasChoices, BaseModel, Field
+
+from openg2p_fastapi_common.errors import ErrorResponse
+from .status_codes import StatusEnum
 
 
-class SyncRequestHeader(BaseModel):
+class AsyncRequestHeader(BaseModel):
     version: str = "1.0.0"
     message_id: str
     message_ts: str
@@ -17,20 +22,20 @@ class SyncRequestHeader(BaseModel):
     meta: dict = {}
 
 
-class SyncResponseStatusEnum(Enum):
-    rcvd = "rcvd"
-    pdng = "pdng"
-    succ = "succ"
-    rjct = "rjct"
-
-
-class SyncRequest(BaseModel):
+class AsyncRequest(BaseModel):
     signature: str
-    header: SyncRequestHeader
+    header: AsyncRequestHeader
     message: dict
 
 
-class SyncResponseStatusReasonCodeEnum(Enum):
+class AsyncAck(Enum):
+    ACK = "ACK"
+    NACK = "NACK"
+    ERR = "ERR"
+
+
+
+class AsyncResponseStatusReasonCodeEnum(Enum):
     rjct_version_invalid = "rjct.version.invalid"
     rjct_message_id_duplicate = "rjct.message_id.duplicate"
     rjct_message_ts_invalid = "rjct.message_ts.invalid"
@@ -41,13 +46,24 @@ class SyncResponseStatusReasonCodeEnum(Enum):
     rjct_errors_too_many = "rjct.errors.too_many"
 
 
-class SyncResponseHeader(BaseModel):
+class AsyncResponseMessage(BaseModel):
+    ack_status: Optional[AsyncAck] = None
+    timestamp: datetime
+    error: Optional[ErrorResponse] = None
+    correlation_id: Optional[str] = None
+
+
+class AsyncResponse(BaseModel):
+    message: AsyncResponseMessage
+
+
+class AsyncCallbackRequestHeader(BaseModel):
     version: str = "1.0.0"
     message_id: str
     message_ts: str
     action: str
-    status: SyncResponseStatusEnum
-    status_reason_code: SyncResponseStatusReasonCodeEnum
+    status: StatusEnum
+    status_reason_code: AsyncResponseStatusReasonCodeEnum
     status_reason_message: str
     total_count: int
     completed_count: int
@@ -59,7 +75,7 @@ class SyncResponseHeader(BaseModel):
     meta: dict = {}
 
 
-class SyncResponse(BaseModel):
+class AsyncCallbackRequest(BaseModel):
     signature: str
-    header: SyncResponseHeader
+    header: AsyncCallbackRequestHeader
     message: dict

@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel
 
-from openg2p_fastapi_common.models import AsyncResponseStatusEnum
+from ...common.schemas.status_codes import StatusEnum
 
 
 class UpdateStatusReasonCode(Enum):
@@ -20,8 +20,8 @@ class SingleUpdateRequest(BaseModel):
     fa: str
     name: Optional[str] = None
     phone_number: Optional[str] = None
-    additional_info: Optional[List[dict]]
-    locale: Optional[str]
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class UpdateRequest(BaseModel):
@@ -33,11 +33,11 @@ class SingleUpdateResponse(BaseModel):
     reference_id: str
     timestamp: str
     id: Optional[str] = ""
-    status: RequestStatusEnum
+    status: StatusEnum
     status_reason_code: Optional[UpdateStatusReasonCode] = None
     status_reason_message: Optional[str] = ""
-    additional_info: Optional[List[dict]]
-    locale: str
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class UpdateResponse(BaseModel):

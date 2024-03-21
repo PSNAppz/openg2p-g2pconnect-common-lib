@@ -30,7 +30,7 @@ class SingleTxnStatusRequest(BaseModel):
     txn_type: TxnType
     attribute_type: TxnAttributeType
     attribute_value: str
-    locale: Optional[str]
+    locale: Optional[str] = "en"
 
 
 class TxnStatusRequest(BaseModel):

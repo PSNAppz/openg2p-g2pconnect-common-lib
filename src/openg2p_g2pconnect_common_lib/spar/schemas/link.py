@@ -1,19 +1,20 @@
 from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel
+from datetime import datetime
 
-from .common import RequestStatusEnum
+from ...common.schemas.status_codes import StatusEnum
 
 
 class SingleLinkRequest(BaseModel):
     reference_id: str
-    timestamp: str
+    timestamp: datetime
     id: str
     fa: str
     name: Optional[str] = None
     phone_number: Optional[str] = None
-    additional_info: Optional[str] = ""
-    locale: Optional[str]
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class LinkRequest(BaseModel):
@@ -35,16 +36,16 @@ class LinkStatusReasonCode(Enum):
 
 class SingleLinkResponse(BaseModel):
     reference_id: str
-    timestamp: str
-    fa: Optional[str]
-    status: RequestStatusEnum
-    status_reason_code: Optional[LinkStatusReasonCode]
-    status_reason_message: Optional[str]
-    additional_info: List[dict]
-    locale: str
+    timestamp: datetime
+    fa: Optional[str] = None
+    status: StatusEnum
+    status_reason_code: Optional[LinkStatusReasonCode] = None
+    status_reason_message: Optional[str] = None
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class LinkResponse(BaseModel):
     transaction_id: str
-    correlation_id: str
+    correlation_id: Optional[str] = None
     link_response: List[SingleLinkResponse]

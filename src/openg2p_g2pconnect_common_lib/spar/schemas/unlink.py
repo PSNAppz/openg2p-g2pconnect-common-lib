@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel
+from datetime import datetime
 
 from .common import RequestStatusEnum, SingleCommonRequest
 
@@ -14,13 +15,13 @@ class UnlinkStatusReasonCode(Enum):
 
 class SingleUnlinkRequest(SingleCommonRequest):
     reference_id: str
-    timestamp: str
+    timestamp: datetime
     id: str
     fa: str
     name: Optional[str] = None
     phone_number: Optional[str] = None
-    additional_info: Optional[List[dict]]
-    locale: Optional[str]
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class UnlinkRequest(BaseModel):
@@ -30,13 +31,13 @@ class UnlinkRequest(BaseModel):
 
 class SingleUnlinkResponse(SingleCommonRequest):
     reference_id: str
-    timestamp: str
+    timestamp: datetime
     id: Optional[str] = ""
     status: RequestStatusEnum
     status_reason_code: Optional[UnlinkStatusReasonCode] = None
     status_reason_message: Optional[str] = ""
-    additional_info: Optional[List[dict]]
-    locale: str
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class UnlinkResponse(BaseModel):

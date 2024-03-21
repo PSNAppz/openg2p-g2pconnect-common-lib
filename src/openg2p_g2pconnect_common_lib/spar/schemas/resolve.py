@@ -39,8 +39,8 @@ class SingleResolveRequest(SingleCommonRequest):
     id: Optional[str] = ""
     name: Optional[str] = None
     scope: Optional[ResolveScope] = ResolveScope.details
-    additional_info: Optional[List[dict]]
-    locale: Optional[str]
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class ResolveRequest(BaseModel):
@@ -57,8 +57,8 @@ class SingleResolveResponse(BaseModel):
     status: RequestStatusEnum
     status_reason_code: Optional[ResolveStatusReasonCode] = None
     status_reason_message: Optional[str] = ""
-    additional_info: Optional[List[dict]]
-    locale: Optional[str]
+    additional_info: Optional[List[object]] = None
+    locale: Optional[str] = "en"
 
 
 class ResolveCallbackResponse(BaseModel):
