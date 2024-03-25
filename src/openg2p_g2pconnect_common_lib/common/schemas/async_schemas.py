@@ -7,32 +7,10 @@ from openg2p_fastapi_common.errors import ErrorResponse
 from .status_codes import StatusEnum
 
 
-class AsyncRequestHeader(BaseModel):
-    version: str = "1.0.0"
-    message_id: str
-    message_ts: str
-    action: str
-    sender_id: str
-    sender_uri: str = ""
-    receiver_id: str = ""
-    total_count: int
-    is_msg_encrypted: bool = Field(
-        validation_alias=AliasChoices("is_msg_encrypted", "is_encrypted"), default=False
-    )
-    meta: dict = {}
-
-
-class AsyncRequest(BaseModel):
-    signature: str
-    header: AsyncRequestHeader
-    message: dict
-
-
 class AsyncAck(Enum):
     ACK = "ACK"
     NACK = "NACK"
     ERR = "ERR"
-
 
 
 class AsyncResponseStatusReasonCodeEnum(Enum):
@@ -76,6 +54,6 @@ class AsyncCallbackRequestHeader(BaseModel):
 
 
 class AsyncCallbackRequest(BaseModel):
-    signature: str
+    signature: Optional[str] = None
     header: AsyncCallbackRequestHeader
-    message: dict
+    message: Optional[object] = None

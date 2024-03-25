@@ -5,27 +5,6 @@ from typing import Optional
 from .status_codes import StatusEnum
 
 
-class SyncRequestHeader(BaseModel):
-    version: Optional[str] = "1.0.0"
-    message_id: str
-    message_ts: str
-    action: str
-    sender_id: str
-    sender_uri: Optional[str] = ""
-    receiver_id: str = ""
-    total_count: int
-    is_msg_encrypted: bool = Field(
-        validation_alias=AliasChoices("is_msg_encrypted", "is_encrypted"), default=False
-    )
-    meta: dict = {}
-
-
-class SyncRequest(BaseModel):
-    signature: str
-    header: SyncRequestHeader
-    message: object
-
-
 class SyncResponseStatusReasonCodeEnum(Enum):
     rjct_version_invalid = "rjct.version.invalid"
     rjct_message_id_duplicate = "rjct.message_id.duplicate"
