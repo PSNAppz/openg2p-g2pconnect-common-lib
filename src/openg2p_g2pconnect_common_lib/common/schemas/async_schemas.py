@@ -41,16 +41,16 @@ class AsyncCallbackRequestHeader(BaseModel):
     message_ts: str
     action: str
     status: StatusEnum
-    status_reason_code: AsyncResponseStatusReasonCodeEnum
-    status_reason_message: str
-    total_count: int
-    completed_count: int
-    sender_id: str
-    receiver_id: str
-    is_msg_encrypted: bool = Field(
+    status_reason_code: Optional[AsyncResponseStatusReasonCodeEnum] = None
+    status_reason_message: Optional[str] = None
+    total_count: Optional[int] = 0
+    completed_count: Optional[int] = 0
+    sender_id: Optional[str] = None
+    receiver_id: Optional[str] = None
+    is_msg_encrypted: Optional[bool] = Field(
         validation_alias=AliasChoices("is_msg_encrypted", "is_encrypted"), default=False
     )
-    meta: dict = {}
+    meta: Optional[object] = None
 
 
 class AsyncCallbackRequest(BaseModel):
