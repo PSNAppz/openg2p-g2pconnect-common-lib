@@ -3,12 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from .common import (
-    AccountProviderInfo,
-    RequestStatusEnum,
-    SingleCommonRequest,
-)
-from .message import MsgCallbackHeader, MsgHeader
+from ...common.schemas import StatusEnum
 
 
 class ResolveScope(Enum):
@@ -32,7 +27,7 @@ class ResolveStatusReasonCode(Enum):
     succ_id_not_found = "succ.id.not_found"
 
 
-class SingleResolveRequest(SingleCommonRequest):
+class SingleResolveRequest(BaseModel):
     reference_id: str
     timestamp: str
     fa: Optional[str] = ""
@@ -48,20 +43,24 @@ class ResolveRequest(BaseModel):
     resolve_request: List[SingleResolveRequest]
 
 
+class AccountProviderInfo(BaseModel):
+    pass
+
+
 class SingleResolveResponse(BaseModel):
     reference_id: str
     timestamp: str
     fa: Optional[str] = None
     id: Optional[str] = None
     account_provider_info: Optional[AccountProviderInfo] = None
-    status: RequestStatusEnum
+    status: StatusEnum
     status_reason_code: Optional[ResolveStatusReasonCode] = None
     status_reason_message: Optional[str] = ""
     additional_info: Optional[List[object]] = None
     locale: Optional[str] = "en"
 
 
-class ResolveCallbackResponse(BaseModel):
+class ResolveResponse(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = ""
     resolve_response: List[SingleResolveResponse]

@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-from ...common.schemas.status_codes import StatusEnum
+from ...common.schemas import StatusEnum
 
 
 class SingleLinkRequest(BaseModel):

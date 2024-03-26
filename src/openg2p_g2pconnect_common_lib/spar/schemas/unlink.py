@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-from .common import RequestStatusEnum, SingleCommonRequest
+from ...common.schemas import StatusEnum
 
 
 class UnlinkStatusReasonCode(Enum):
@@ -13,7 +13,7 @@ class UnlinkStatusReasonCode(Enum):
     rjct_beneficiary_name_invalid = "rjct.beneficiary_name.invalid"
 
 
-class SingleUnlinkRequest(SingleCommonRequest):
+class SingleUnlinkRequest(BaseModel):
     reference_id: str
     timestamp: datetime
     id: str
@@ -29,11 +29,11 @@ class UnlinkRequest(BaseModel):
     unlink_request: List[SingleUnlinkRequest]
 
 
-class SingleUnlinkResponse(SingleCommonRequest):
+class SingleUnlinkResponse(BaseModel):
     reference_id: str
     timestamp: datetime
     id: Optional[str] = ""
-    status: RequestStatusEnum
+    status: StatusEnum
     status_reason_code: Optional[UnlinkStatusReasonCode] = None
     status_reason_message: Optional[str] = ""
     additional_info: Optional[List[object]] = None
