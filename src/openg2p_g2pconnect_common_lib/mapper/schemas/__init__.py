@@ -22,6 +22,7 @@ from .update import (
 )
 from .unlink import (
     UnlinkRequest,
+    UnlinkResponse,
     SingleUnlinkResponse,
     UnlinkStatusReasonCode,
     SingleUnlinkRequest
