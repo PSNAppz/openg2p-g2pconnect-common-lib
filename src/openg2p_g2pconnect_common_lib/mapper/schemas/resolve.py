@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import List, Optional
-
+from datetime import datetime
 from pydantic import BaseModel
 
 from ...common.schemas import StatusEnum
@@ -29,7 +29,7 @@ class ResolveStatusReasonCode(Enum):
 
 class SingleResolveRequest(BaseModel):
     reference_id: str
-    timestamp: str
+    timestamp: datetime
     fa: Optional[str] = ""
     id: Optional[str] = ""
     name: Optional[str] = None
@@ -49,7 +49,7 @@ class AccountProviderInfo(BaseModel):
 
 class SingleResolveResponse(BaseModel):
     reference_id: str
-    timestamp: str
+    timestamp: datetime
     fa: Optional[str] = None
     id: Optional[str] = None
     account_provider_info: Optional[AccountProviderInfo] = None

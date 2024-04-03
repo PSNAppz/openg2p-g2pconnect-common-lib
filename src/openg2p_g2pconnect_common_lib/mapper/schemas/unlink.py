@@ -8,6 +8,8 @@ from ...common.schemas import StatusEnum
 
 class UnlinkStatusReasonCode(Enum):
     rjct_reference_id_invalid = "rjct.reference_id.invalid"
+    rjct_id_invalid = "rjct.id.invalid"
+    rjct_fa_invalid = "rjct.fa.invalid"
     rjct_reference_id_duplicate = "rjct.reference_id.duplicate"
     rjct_timestamp_invalid = "rjct.timestamp.invalid"
     rjct_beneficiary_name_invalid = "rjct.beneficiary_name.invalid"
