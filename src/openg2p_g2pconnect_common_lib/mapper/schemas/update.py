@@ -1,8 +1,8 @@
 from enum import Enum
-from typing import List, Optional
-from pydantic import BaseModel
-
+from typing import Dict, List, Optional, Union
+from datetime import datetime
 from ...common.schemas.status_codes import StatusEnum
+from pydantic import AliasChoices, BaseModel, Field, field_validator
 
 
 class UpdateStatusReasonCode(Enum):
@@ -12,18 +12,28 @@ class UpdateStatusReasonCode(Enum):
     rjct_beneficiary_name_invalid = "rjct.beneficiary_name.invalid"
     rjct_id_invalid = "rjct.id.invalid"
 
+class AdditionalInfo(BaseModel):
+    name: str = Field(validation_alias=AliasChoices("name", "key"))
+    value: Union[int, float, str, bool, dict]
 
 class SingleUpdateRequest(BaseModel):
     reference_id: str
-    timestamp: str
+    timestamp: datetime
     id: str
     fa: str
     name: Optional[str] = None
     phone_number: Optional[str] = None
-    additional_info: Optional[List[object]] = None
+    additional_info: Optional[List[AdditionalInfo]] = None
     locale: Optional[str] = "en"
 
-
+    @field_validator("additional_info")
+    @classmethod
+    def convert_addl_info_dict_list(
+        cls, v: Optional[Union[List[AdditionalInfo], AdditionalInfo]]
+    ):
+        if v and not isinstance(v, list):
+            v = [v]
+        return v
 class UpdateRequest(BaseModel):
     transaction_id: str
     update_request: List[SingleUpdateRequest]
@@ -31,7 +41,7 @@ class UpdateRequest(BaseModel):
 
 class SingleUpdateResponse(BaseModel):
     reference_id: str
-    timestamp: str
+    timestamp: datetime
     id: Optional[str] = ""
     status: StatusEnum
     status_reason_code: Optional[UpdateStatusReasonCode] = None
