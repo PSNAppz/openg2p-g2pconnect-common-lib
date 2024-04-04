@@ -15,11 +15,6 @@ class UpdateStatusReasonCode(Enum):
     rjct_id_invalid = "rjct.id.invalid"
 
 
-class AdditionalInfo(BaseModel):
-    name: str = Field(validation_alias=AliasChoices("name", "key"))
-    value: Union[int, float, str, bool, dict]
-
-
 class SingleUpdateRequest(BaseModel):
     reference_id: str
     timestamp: datetime
@@ -27,17 +22,8 @@ class SingleUpdateRequest(BaseModel):
     fa: str
     name: Optional[str] = None
     phone_number: Optional[str] = None
-    additional_info: Optional[List[AdditionalInfo]] = None
+    additional_info: Optional[List[object]] = None
     locale: Optional[str] = "en"
-
-    @field_validator("additional_info")
-    @classmethod
-    def convert_addl_info_dict_list(
-            cls, v: Optional[Union[List[AdditionalInfo], AdditionalInfo]]
-    ):
-        if v and not isinstance(v, list):
-            v = [v]
-        return v
 
 
 class UpdateRequestMessage(BaseModel):
