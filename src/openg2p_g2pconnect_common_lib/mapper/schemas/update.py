@@ -1,8 +1,10 @@
 from enum import Enum
 from typing import Dict, List, Optional, Union
 from datetime import datetime
-from ...common.schemas.status_codes import StatusEnum
 from pydantic import AliasChoices, BaseModel, Field, field_validator
+
+from ...common.schemas.status_codes import StatusEnum
+from ...common.schemas import Request
 
 
 class UpdateStatusReasonCode(Enum):
@@ -12,9 +14,11 @@ class UpdateStatusReasonCode(Enum):
     rjct_beneficiary_name_invalid = "rjct.beneficiary_name.invalid"
     rjct_id_invalid = "rjct.id.invalid"
 
+
 class AdditionalInfo(BaseModel):
     name: str = Field(validation_alias=AliasChoices("name", "key"))
     value: Union[int, float, str, bool, dict]
+
 
 class SingleUpdateRequest(BaseModel):
     reference_id: str
@@ -29,12 +33,14 @@ class SingleUpdateRequest(BaseModel):
     @field_validator("additional_info")
     @classmethod
     def convert_addl_info_dict_list(
-        cls, v: Optional[Union[List[AdditionalInfo], AdditionalInfo]]
+            cls, v: Optional[Union[List[AdditionalInfo], AdditionalInfo]]
     ):
         if v and not isinstance(v, list):
             v = [v]
         return v
-class UpdateRequest(BaseModel):
+
+
+class UpdateRequestMessage(BaseModel):
     transaction_id: str
     update_request: List[SingleUpdateRequest]
 
@@ -54,3 +60,7 @@ class UpdateResponse(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = ""
     update_response: List[SingleUpdateResponse]
+
+
+class UpdateRequest(Request):
+    message: UpdateRequestMessage

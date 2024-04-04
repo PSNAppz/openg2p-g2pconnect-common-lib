@@ -1,4 +1,5 @@
 from .link import (
+    LinkRequestMessage,
     SingleLinkRequest,
     LinkRequest,
     LinkStatusReasonCode,
@@ -10,10 +11,12 @@ from .resolve import (
     ResolveStatusReasonCode,
     SingleResolveRequest,
     ResolveRequest,
+    ResolveRequestMessage,
     SingleResolveResponse,
     ResolveResponse,
 )
 from .update import (
+    UpdateRequestMessage,
     UpdateStatusReasonCode,
     SingleUpdateRequest,
     UpdateRequest,
@@ -22,8 +25,18 @@ from .update import (
 )
 from .unlink import (
     UnlinkRequest,
+    UnlinkRequestMessage,
     UnlinkResponse,
     SingleUnlinkResponse,
     UnlinkStatusReasonCode,
     SingleUnlinkRequest
+)
+from .txnstatus import (
+    TxnStatusReasonCode,
+    SingleTxnStatusRequest,
+    TxnStatusRequestMessage,
+    SingleTxnStatusResponse,
+    TxnStatusResponse,
+    TxnStatusRequest,
+    TxnAttributeType,
 )
