@@ -4,7 +4,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 from ...common.schemas import StatusEnum
-from ...common.schemas import Request
+from ...common.schemas import Request, SyncResponse
 
 
 class ResolveScope(Enum):
@@ -61,7 +61,7 @@ class SingleResolveResponse(BaseModel):
     locale: Optional[str] = "en"
 
 
-class ResolveResponse(BaseModel):
+class ResolveResponseMessage(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = ""
     resolve_response: List[SingleResolveResponse]
@@ -69,3 +69,7 @@ class ResolveResponse(BaseModel):
 
 class ResolveRequest(Request):
     message: ResolveRequestMessage
+
+
+class ResolveResponse(SyncResponse):
+    message: ResolveResponseMessage

@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel
 
-from ...common.schemas import Request
+from ...common.schemas import Request, SyncResponse
 
 
 class TxnStatusReasonCode(Enum):
@@ -45,7 +45,7 @@ class SingleTxnStatusResponse(BaseModel):
     txn_status: dict
 
 
-class TxnStatusResponse(BaseModel):
+class TxnStatusResponseMessage(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = ""
     txnstatus_response: List[SingleTxnStatusResponse]
@@ -53,3 +53,7 @@ class TxnStatusResponse(BaseModel):
 
 class TxnStatusRequest(Request):
     message: TxnStatusRequestMessage
+
+
+class TxnStatusResponse(SyncResponse):
+    message: TxnStatusResponseMessage

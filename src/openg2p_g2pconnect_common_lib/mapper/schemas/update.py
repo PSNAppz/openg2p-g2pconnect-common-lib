@@ -1,10 +1,10 @@
 from enum import Enum
-from typing import Dict, List, Optional, Union
+from typing import List, Optional
 from datetime import datetime
-from pydantic import AliasChoices, BaseModel, Field, field_validator
+from pydantic import BaseModel
 
 from ...common.schemas.status_codes import StatusEnum
-from ...common.schemas import Request
+from ...common.schemas import Request, SyncResponse
 
 
 class UpdateStatusReasonCode(Enum):
@@ -13,6 +13,7 @@ class UpdateStatusReasonCode(Enum):
     rjct_timestamp_invalid = "rjct.timestamp.invalid"
     rjct_beneficiary_name_invalid = "rjct.beneficiary_name.invalid"
     rjct_id_invalid = "rjct.id.invalid"
+    rjct_fa_invalid = "rjct.fa.invalid"
 
 
 class SingleUpdateRequest(BaseModel):
@@ -42,7 +43,7 @@ class SingleUpdateResponse(BaseModel):
     locale: Optional[str] = "en"
 
 
-class UpdateResponse(BaseModel):
+class UpdateResponseMessage(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = ""
     update_response: List[SingleUpdateResponse]
@@ -50,3 +51,7 @@ class UpdateResponse(BaseModel):
 
 class UpdateRequest(Request):
     message: UpdateRequestMessage
+
+
+class UpdateResponse(SyncResponse):
+    message: UpdateResponseMessage
