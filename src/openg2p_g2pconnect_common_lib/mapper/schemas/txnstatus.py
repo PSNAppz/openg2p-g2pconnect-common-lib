@@ -2,6 +2,8 @@ from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel
 
+from ...common.schemas import Request
+
 
 class TxnStatusReasonCode(Enum):
     rjct_reference_id_invalid = "rjct.reference_id.invalid"
@@ -33,7 +35,7 @@ class SingleTxnStatusRequest(BaseModel):
     locale: Optional[str] = "en"
 
 
-class TxnStatusRequest(BaseModel):
+class TxnStatusRequestMessage(BaseModel):
     transaction_id: str
     txnstatus_request: List[SingleTxnStatusRequest]
 
@@ -47,3 +49,7 @@ class TxnStatusResponse(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = ""
     txnstatus_response: List[SingleTxnStatusResponse]
+
+
+class TxnStatusRequest(Request):
+    message: TxnStatusRequestMessage

@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from ...common.schemas import StatusEnum
+from ...common.schemas import Request
 
 
 class SingleLinkRequest(BaseModel):
@@ -17,7 +18,7 @@ class SingleLinkRequest(BaseModel):
     locale: Optional[str] = "en"
 
 
-class LinkRequest(BaseModel):
+class LinkRequestMessage(BaseModel):
     transaction_id: str
     link_request: List[SingleLinkRequest]
 
@@ -49,3 +50,7 @@ class LinkResponse(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = None
     link_response: List[SingleLinkResponse]
+
+
+class LinkRequest(Request):
+    message: LinkRequestMessage

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from datetime import datetime
 
 from ...common.schemas import StatusEnum
-
+from ...common.schemas import Request
 
 class UnlinkStatusReasonCode(Enum):
     rjct_reference_id_invalid = "rjct.reference_id.invalid"
@@ -26,7 +26,7 @@ class SingleUnlinkRequest(BaseModel):
     locale: Optional[str] = "en"
 
 
-class UnlinkRequest(BaseModel):
+class UnlinkRequestMessage(BaseModel):
     transaction_id: str
     unlink_request: List[SingleUnlinkRequest]
 
@@ -46,3 +46,7 @@ class UnlinkResponse(BaseModel):
     transaction_id: str
     correlation_id: Optional[str] = ""
     unlink_response: List[SingleUnlinkResponse]
+
+
+class UnlinkRequest(Request):
+    message: UnlinkRequestMessage
