@@ -22,7 +22,7 @@ class SyncResponseHeader(BaseModel):
     message_ts: str
     action: str
     status: StatusEnum
-    status_reason_code: Optional[SyncResponseStatusReasonCodeEnum]
+    status_reason_code: Optional[SyncResponseStatusReasonCodeEnum] = None
     status_reason_message: Optional[str] = ""
     total_count: Optional[int] = None
     completed_count: Optional[int] = None
