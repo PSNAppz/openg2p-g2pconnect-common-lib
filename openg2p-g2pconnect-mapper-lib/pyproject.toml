@@ -16,6 +16,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "openg2p-g2pconnect-common-lib",
 ]
 dynamic = ["version"]
 

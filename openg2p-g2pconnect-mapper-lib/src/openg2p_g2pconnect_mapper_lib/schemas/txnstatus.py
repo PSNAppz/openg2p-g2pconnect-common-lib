@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel
 
-from openg2p_g2pconnect_common_lib.src.openg2p_g2pconnect_common_lib.schemas import Request, SyncResponse
+from openg2p_g2pconnect_common_lib.schemas import Request, SyncResponse
 
 
 class TxnStatusReasonCode(Enum):
