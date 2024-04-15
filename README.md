@@ -1,2 +1,2 @@
-# openg2p-g2pconnect-common-lib
+# openg2p-g2pconnect-common
 All artefacts for complying with G2PConnect API Specifications for SPAR, Mapper, Social Registry, PBMS etc
