@@ -3,8 +3,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-from ...common.schemas import StatusEnum
-from ...common.schemas import Request, SyncResponse
+from openg2p_g2pconnect_common_lib.src.openg2p_g2pconnect_common_lib.schemas import StatusEnum
+from openg2p_g2pconnect_common_lib.src.openg2p_g2pconnect_common_lib.schemas import Request, SyncResponse
 
 
 class SingleLinkRequest(BaseModel):

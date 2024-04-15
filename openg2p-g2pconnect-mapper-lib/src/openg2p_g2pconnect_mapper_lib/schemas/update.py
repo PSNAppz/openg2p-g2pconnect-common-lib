@@ -3,8 +3,8 @@ from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-from ...common.schemas.status_codes import StatusEnum
-from ...common.schemas import Request, SyncResponse
+from openg2p_g2pconnect_common_lib.src.openg2p_g2pconnect_common_lib.schemas import StatusEnum
+from openg2p_g2pconnect_common_lib.src.openg2p_g2pconnect_common_lib.schemas import Request, SyncResponse
 
 
 class UpdateStatusReasonCode(Enum):
