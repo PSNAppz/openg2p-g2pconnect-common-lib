@@ -45,7 +45,10 @@ class ResolveRequestMessage(BaseModel):
 
 
 class AccountProviderInfo(BaseModel):
-    pass
+    name: str
+    code: str
+    subcode: Optional[str]
+    additional_info: Optional[List[object]] = None
 
 
 class SingleResolveResponse(BaseModel):
