@@ -11,7 +11,17 @@ class BaseAppException(HTTPException):
         self.message = message
 
     def __str__(self):
-        return f'{self.__class__.__name__}(code="{self.code}", message="{self.message}", https_status_code="{self.status_code}")'
+        return (
+            f"{self.__class__.__name__}("
+            f'code="{self.code}",'
+            f' message="{self.message}",'
+            f' https_status_code="{self.status_code}")'
+        )
 
     def __repr__(self):
-        return f'{self.__class__.__name__}(code="{self.code}", message="{self.message}", https_status_code="{self.status_code}")'
+        return (
+            f"{self.__class__.__name__}("
+            f'code="{self.code}",'
+            f' message="{self.message}",'
+            f' https_status_code="{self.status_code}")'
+        )
