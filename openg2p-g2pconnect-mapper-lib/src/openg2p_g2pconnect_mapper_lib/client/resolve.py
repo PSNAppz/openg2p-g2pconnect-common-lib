@@ -11,7 +11,7 @@ from ..schemas import ResolveRequest, ResolveResponse
 _logger = logging.getLogger("mapper_client_resolve")
 
 
-class MapperResolveService(BaseService):
+class MapperResolveClient(BaseService):
     async def resolve_request(
         self, resolve_request: ResolveRequest, resolve_url: str = None, timeout=60
     ) -> ResolveResponse:

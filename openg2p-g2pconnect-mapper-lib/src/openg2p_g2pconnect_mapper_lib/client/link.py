@@ -11,7 +11,7 @@ from ..schemas import LinkRequest, LinkResponse
 _logger = logging.getLogger("mapper_client_link")
 
 
-class MapperLinkService(BaseService):
+class MapperLinkClient(BaseService):
     async def link_request(
         self, link_request: LinkRequest, link_url: str = None, timeout=60
     ) -> LinkResponse:

@@ -8,7 +8,7 @@ from ..schemas import UpdateRequest, UpdateResponse
 _logger = logging.getLogger("mapper_client_update")
 
 
-class MapperUpdateService(BaseService):
+class MapperUpdateClient(BaseService):
     async def update_request(
         self, update_request: UpdateRequest, update_url: str = None, timeout=60
     ) -> UpdateResponse:

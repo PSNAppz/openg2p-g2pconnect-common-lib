@@ -44,7 +44,7 @@ class SingleUnlinkResponse(BaseModel):
 
 
 class UnlinkResponseMessage(BaseModel):
-    transaction_id: str
+    transaction_id: Optional[str] = None
     correlation_id: Optional[str] = ""
     unlink_response: List[SingleUnlinkResponse]
 
