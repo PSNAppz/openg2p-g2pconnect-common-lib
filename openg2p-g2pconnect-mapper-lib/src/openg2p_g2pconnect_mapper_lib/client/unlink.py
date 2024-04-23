@@ -11,7 +11,7 @@ from ..schemas import UnlinkRequest, UnlinkResponse
 _logger = logging.getLogger("mapper_client_unlink")
 
 
-class MapperUnlinkService(BaseService):
+class MapperUnlinkClient(BaseService):
     async def unlink_request(
         self, unlink_request: UnlinkRequest, unlink_url: str = None, timeout=60
     ) -> UnlinkResponse:

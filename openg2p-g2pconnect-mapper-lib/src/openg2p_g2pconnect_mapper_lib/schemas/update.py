@@ -44,7 +44,7 @@ class SingleUpdateResponse(BaseModel):
 
 
 class UpdateResponseMessage(BaseModel):
-    transaction_id: str
+    transaction_id: Optional[str] = None
     correlation_id: Optional[str] = ""
     update_response: List[SingleUpdateResponse]
 

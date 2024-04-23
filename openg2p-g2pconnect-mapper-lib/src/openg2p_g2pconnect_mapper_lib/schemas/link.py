@@ -47,7 +47,7 @@ class SingleLinkResponse(BaseModel):
 
 
 class LinkResponseMessage(BaseModel):
-    transaction_id: str
+    transaction_id: Optional[str] = None
     correlation_id: Optional[str] = None
     link_response: List[SingleLinkResponse]
 

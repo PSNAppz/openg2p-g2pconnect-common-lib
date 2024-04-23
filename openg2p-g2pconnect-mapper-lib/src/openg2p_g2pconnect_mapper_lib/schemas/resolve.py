@@ -65,7 +65,7 @@ class SingleResolveResponse(BaseModel):
 
 
 class ResolveResponseMessage(BaseModel):
-    transaction_id: str
+    transaction_id: Optional[str] = None
     correlation_id: Optional[str] = ""
     resolve_response: List[SingleResolveResponse]
 
