@@ -34,7 +34,7 @@ class SingleResolveRequest(BaseModel):
     fa: Optional[str] = ""
     id: Optional[str] = ""
     name: Optional[str] = None
-    scope: Optional[ResolveScope] = ResolveScope.details
+    scope: Optional[ResolveScope] = ResolveScope.yes_no
     additional_info: Optional[List[object]] = None
     locale: Optional[str] = "en"
 
