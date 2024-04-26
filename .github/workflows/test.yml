@@ -44,6 +44,7 @@ jobs:
           python -m pip install -e ./openg2p-g2pconnect-mapper-lib
       - name: Run test suite
         run: |
-          pytest --cov-branch --cov=openg2p_g2pconnect_common_lib --cov=openg2p_g2pconnect_mapper_lib --cov=tests --cov-report=term-missing
+          pytest --cov-branch --cov-report=term-missing --cov=openg2p_g2pconnect_common_lib --cov=tests openg2p-g2pconnect-common-lib
+          pytest --cov-branch --cov-report=term-missing --cov=openg2p_g2pconnect_mapper_lib --cov=tests openg2p-g2pconnect-mapper-lib --cov-append
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
