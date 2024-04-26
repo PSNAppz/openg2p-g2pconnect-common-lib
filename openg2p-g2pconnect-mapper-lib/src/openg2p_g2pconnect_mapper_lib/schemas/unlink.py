@@ -20,7 +20,7 @@ class SingleUnlinkRequest(BaseModel):
     reference_id: str
     timestamp: datetime
     id: str
-    fa: str
+    fa: Optional[str] = None
     name: Optional[str] = None
     phone_number: Optional[str] = None
     additional_info: Optional[List[object]] = None
