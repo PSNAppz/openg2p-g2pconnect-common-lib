@@ -1,10 +1,9 @@
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional
-from pydantic import BaseModel
-from datetime import datetime
 
-from openg2p_g2pconnect_common_lib.schemas import StatusEnum
-from openg2p_g2pconnect_common_lib.schemas import Request, SyncResponse
+from openg2p_g2pconnect_common_lib.schemas import Request, StatusEnum, SyncResponse
+from pydantic import BaseModel
 
 
 class UnlinkStatusReasonCode(Enum):

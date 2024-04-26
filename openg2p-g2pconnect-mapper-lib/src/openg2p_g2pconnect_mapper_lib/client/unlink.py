@@ -1,8 +1,6 @@
 import logging
 
-
 import httpx
-
 from openg2p_fastapi_common.errors.base_exception import BaseAppException
 from openg2p_fastapi_common.service import BaseService
 
@@ -35,4 +33,4 @@ class MapperUnlinkClient(BaseService):
                 message="Error in unlink request",
                 code=e.response.status_code,
                 detail=e.response.text,
-            )
+            ) from e
