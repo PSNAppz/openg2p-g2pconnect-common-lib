@@ -1,9 +1,10 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from pydantic import AliasChoices, BaseModel, Field
 
 from openg2p_fastapi_common.errors import ErrorResponse
+from pydantic import AliasChoices, BaseModel, Field
+
 from .status_codes import StatusEnum
 
 

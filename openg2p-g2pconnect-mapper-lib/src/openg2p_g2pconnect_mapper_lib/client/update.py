@@ -1,4 +1,5 @@
 import logging
+
 import httpx
 from openg2p_fastapi_common.errors.base_exception import BaseAppException
 from openg2p_fastapi_common.service import BaseService
@@ -32,4 +33,4 @@ class MapperUpdateClient(BaseService):
                 message="Error in update request",
                 code=e.response.status_code,
                 detail=e.response.text,
-            )
+            ) from e

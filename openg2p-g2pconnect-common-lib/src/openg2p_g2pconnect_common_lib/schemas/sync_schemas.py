@@ -1,6 +1,7 @@
-from pydantic import AliasChoices, BaseModel, Field
 from enum import Enum
 from typing import Optional
+
+from pydantic import AliasChoices, BaseModel, Field
 
 from .status_codes import StatusEnum
 
