@@ -30,6 +30,6 @@ class MapperUpdateClient(BaseService):
                 f"Error in update request: {e.response.status_code} {e.response.text}"
             )
             raise BaseAppException(
-                message=f"Error in update request",
+                message="Error in update request",
                 code=str(e.response.status_code),
             ) from e

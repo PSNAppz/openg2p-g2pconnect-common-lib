@@ -30,6 +30,6 @@ class MapperUnlinkClient(BaseService):
                 f"Error in unlink request: {e.response.status_code} {e.response.text}"
             )
             raise BaseAppException(
-                message=f"Error in unlink request",
+                message="Error in unlink request",
                 code=str(e.response.status_code),
             ) from e
