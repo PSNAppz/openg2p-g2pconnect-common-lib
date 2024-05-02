@@ -32,7 +32,6 @@ class MapperResolveClient(BaseService):
                 f"Error in resolve request: {e.response.status_code} {e.response.text}"
             )
             raise BaseAppException(
-                message="Error in resolve request",
-                code=e.response.status_code,
-                detail=e.response.text,
+                message=f"Error in resolve request",
+                code=str(e.response.status_code),
             ) from e
