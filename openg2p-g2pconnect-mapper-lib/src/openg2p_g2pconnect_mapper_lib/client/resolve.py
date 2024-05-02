@@ -33,6 +33,5 @@ class MapperResolveClient(BaseService):
             )
             raise BaseAppException(
                 message="Error in resolve request",
-                code=e.response.status_code,
-                detail=e.response.text,
+                code=str(e.response.status_code),
             ) from e
