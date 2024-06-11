@@ -1,6 +1,7 @@
 import httpx
 import logging
 import base64
+import json
 from datetime import datetime
 
 from fastapi import Request
@@ -25,12 +26,13 @@ class JWTSignatureValidator(HTTPBearer):
         }
 
         request_body = await request.body()
+        request_json = json.loads(request_body)
         actual_data = base64.b64encode(request_body).decode("utf-8")
-
         jwt_signature_data = request.headers.get("Authorization")
         if jwt_signature_data is None:
             return False
 
+        reference_id = request_json.get("header", {}).get("sender_id")
         payload = {
             "id": "string",
             "version": "string",
@@ -38,12 +40,12 @@ class JWTSignatureValidator(HTTPBearer):
             "metadata": {},
             "request": {
                 "jwtSignatureData": jwt_signature_data,
-                "actual_data": actual_data,
+                "actual_data": "",
                 "applicationId": _config.auth_application_id,
-                "referenceId": request.headers.get("sender_id"),
+                "referenceId": reference_id,
                 "certificateData": "",
                 "validateTrust": True,
-                "domain": DomainEnum.AUTH,
+                "domain": str(DomainEnum.AUTH),
             },
         }
 
@@ -54,4 +56,7 @@ class JWTSignatureValidator(HTTPBearer):
                 headers=headers,
             )
             response_data = response.json()
-            return response_data["response"]["signatureValid"]
+            try:
+               return response_data["response"]["signatureValid"]
+            except KeyError:
+                return False
