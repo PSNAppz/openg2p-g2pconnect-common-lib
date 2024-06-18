@@ -37,8 +37,8 @@ class Settings(BaseSettings):
 
     auth_api_get_profile: ApiAuthSettings = ApiAuthSettings(enabled=True)
     auth_application_id: str = "OpenG2P-SPAR-Mapper"
-    auth_keycloak_token_url: str = ""
-    auth_keycloak_client_id: str = "spar-mapper"
-    auth_keycloak_client_secret: str = ""
-    auth_keycloak_grant_type: str = "client_credentials"
-    auth_jwt_verify_url: str = ""
+    oauth_token_url: str = ""
+    oauth_client_id: str = "spar-mapper"
+    oauth_client_secret: str = ""
+    oauth_grant_type: str = "client_credentials"
+    jwt_verify_url: str = ""

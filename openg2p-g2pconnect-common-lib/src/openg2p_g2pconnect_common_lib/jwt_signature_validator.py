@@ -9,7 +9,7 @@ from fastapi.security import HTTPBearer
 
 from .config import Settings
 from .schemas import DomainEnum
-from .token import TokenService
+from .oauth_token import OAuthTokenService
 
 
 _config = Settings.get_config()
@@ -18,11 +18,11 @@ _logger = logging.getLogger(_config.logging_default_logger_name)
 
 class JWTSignatureValidator(HTTPBearer):
     async def __call__(self, request: Request) -> bool:
-        token = await TokenService.get_component().get_token()
+        oauth_token = await OAuthTokenService.get_component().get_oauth_token()
         headers = {
             "accept": "*/*",
             "Content-Type": "application/json",
-            "Cookie": f"Authorization={token}",
+            "Cookie": f"Authorization={oauth_token}",
         }
 
         request_body = await request.body()
@@ -40,7 +40,7 @@ class JWTSignatureValidator(HTTPBearer):
             "metadata": {},
             "request": {
                 "jwtSignatureData": jwt_signature_data,
-                "actual_data": "",
+                "actual_data": actual_data,
                 "applicationId": _config.auth_application_id,
                 "referenceId": reference_id,
                 "certificateData": "",
@@ -51,12 +51,12 @@ class JWTSignatureValidator(HTTPBearer):
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                _config.auth_jwt_verify_url,
+                _config.jwt_verify_url,
                 json=payload,
                 headers=headers,
             )
             response_data = response.json()
             try:
-               return response_data["response"]["signatureValid"]
+                return response_data["response"]["signatureValid"]
             except KeyError:
                 return False
