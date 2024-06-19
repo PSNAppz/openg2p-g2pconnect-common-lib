@@ -13,4 +13,4 @@ from .sync_schemas import (
     SyncResponseHeader,
     SyncResponseStatusReasonCodeEnum,
 )
-from .security import DomainEnum
+from .security import DomainEnum, SecurityErrorCodes
