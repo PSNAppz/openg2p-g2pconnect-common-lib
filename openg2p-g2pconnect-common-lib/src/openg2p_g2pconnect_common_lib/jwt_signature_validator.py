@@ -1,16 +1,15 @@
-import httpx
-import logging
 import base64
 import json
+import logging
 from datetime import datetime
 
+import httpx
 from fastapi import Request
 from fastapi.security import HTTPBearer
 
 from .config import Settings
-from .schemas import DomainEnum
 from .oauth_token import OAuthTokenService
-
+from .schemas import DomainEnum
 
 _config = Settings.get_config()
 _logger = logging.getLogger(_config.logging_default_logger_name)
