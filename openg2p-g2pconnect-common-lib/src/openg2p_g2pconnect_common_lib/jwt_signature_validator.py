@@ -40,7 +40,7 @@ class JWTSignatureValidator(HTTPBearer):
             "request": {
                 "jwtSignatureData": jwt_signature_data,
                 "actual_data": actual_data,
-                "applicationId": _config.auth_application_id,
+                "applicationId": _config.oauth_application_id,
                 "referenceId": reference_id,
                 "certificateData": "",
                 "validateTrust": True,
