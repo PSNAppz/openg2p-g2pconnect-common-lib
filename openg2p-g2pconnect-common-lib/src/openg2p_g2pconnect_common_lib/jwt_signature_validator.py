@@ -57,5 +57,6 @@ class JWTSignatureValidator(HTTPBearer):
             response_data = response.json()
             try:
                 return response_data["response"]["signatureValid"]
-            except KeyError:
+            except Exception as e:
+                _logger.error(f"Error: {e}")
                 return False
