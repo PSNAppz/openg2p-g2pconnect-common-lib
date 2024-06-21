@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     auth_default_id_token_verify_at_hash: bool = True
 
     auth_api_get_profile: ApiAuthSettings = ApiAuthSettings(enabled=True)
-    auth_application_id: str = "OpenG2P-SPAR-Mapper"
+    oauth_application_id: str = "OpenG2P-SPAR-Mapper"
     oauth_token_url: str = ""
     oauth_client_id: str = "spar-mapper"
     oauth_client_secret: str = ""
