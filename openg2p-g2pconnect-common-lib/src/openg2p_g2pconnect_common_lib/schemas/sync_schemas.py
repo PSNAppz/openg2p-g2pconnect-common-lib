@@ -40,6 +40,5 @@ class SyncResponseHeader(BaseModel):
 
 
 class SyncResponse(BaseModel):
-    signature: Optional[str] = None
     header: SyncResponseHeader
     message: object
