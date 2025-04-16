@@ -1,7 +1,7 @@
 import base64
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 
 import httpx
 from fastapi import Request
@@ -35,7 +35,7 @@ class JWTSignatureValidator(HTTPBearer):
         payload = {
             "id": "string",
             "version": "string",
-            "requesttime": datetime.now(timezone.utc).isoformat(),
+            "requesttime": datetime.now().isoformat(),
             "metadata": {},
             "request": {
                 "jwtSignatureData": jwt_signature_data,
