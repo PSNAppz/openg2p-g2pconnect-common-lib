@@ -56,6 +56,5 @@ class AsyncCallbackRequestHeader(BaseModel):
 
 
 class AsyncCallbackRequest(BaseModel):
-    signature: Optional[str] = None
     header: AsyncCallbackRequestHeader
     message: Optional[object] = None
