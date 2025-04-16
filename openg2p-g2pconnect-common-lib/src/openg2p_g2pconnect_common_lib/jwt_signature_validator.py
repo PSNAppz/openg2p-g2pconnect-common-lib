@@ -47,7 +47,7 @@ class JWTSignatureValidator(HTTPBearer):
                 "domain": str(DomainEnum.AUTH),
             },
         }
-
+        _logger.info(f"Payload: {payload}, Headers: {headers}, URL: {_config.jwt_verify_url}")
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 _config.jwt_verify_url,
