@@ -15,6 +15,10 @@ _config = Settings.get_config(strict=False)
 _logger = logging.getLogger(_config.logging_default_logger_name)
 
 
+def base64url_encode(input: bytes) -> bytes:
+    return base64.urlsafe_b64encode(input).replace(b"=", b"")
+
+
 class JWTSignatureValidator(HTTPBearer):
     async def __call__(self, request: Request) -> bool:
         oauth_token = await OAuthTokenService.get_component().get_oauth_token()
@@ -24,21 +28,39 @@ class JWTSignatureValidator(HTTPBearer):
             "Cookie": f"Authorization={oauth_token}",
         }
 
+        # Get request body and decode to JSON
         request_body = await request.body()
         request_json = json.loads(request_body)
-        actual_data = base64.b64encode(request_body).decode("utf-8")
+
+        # Canonicalize JSON using separators and encode to base64url (same as JWT payload encoding)
+        canonical_json = json.dumps(request_json, separators=(",", ":")).encode("utf-8")
+        actual_data = base64url_encode(canonical_json).decode(
+            "utf-8"
+        )  # base64url-encoded JSON string
+        
+
+        # Get JWT from header
         jwt_signature_data = request.headers.get("Authorization")
-        if jwt_signature_data is None:
+
+        try:
+            part1, _, part3 = jwt_signature_data.split(".")
+        except ValueError:
+            _logger.error("Malformed detached JWT format. Expected format: part1..part3")
             return False
 
+        # Reconstruct full JWT
+        reconstructed_jwt = f"{part1}.{actual_data}.{part3}"
+
         reference_id = request_json.get("header", {}).get("sender_id")
+
+        # Prepare payload for external verification
         payload = {
             "id": "string",
             "version": "string",
             "requesttime": datetime.now().isoformat(),
             "metadata": {},
             "request": {
-                "jwtSignatureData": jwt_signature_data,
+                "jwtSignatureData": reconstructed_jwt,
                 "actual_data": actual_data,
                 "applicationId": _config.oauth_application_id,
                 "referenceId": reference_id,
@@ -47,16 +69,18 @@ class JWTSignatureValidator(HTTPBearer):
                 "domain": str(DomainEnum.AUTH),
             },
         }
-        _logger.info(f"Payload: {payload}, Headers: {headers}, URL: {_config.jwt_verify_url}")
+
+        _logger.info(
+            f"Payload: {payload}, Headers: {headers}, URL: {_config.jwt_verify_url}"
+        )
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 _config.jwt_verify_url,
                 json=payload,
                 headers=headers,
             )
-            response_data = response.json()
             try:
-                return response_data["response"]["signatureValid"]
+                return response.json()["response"]["signatureValid"]
             except Exception as e:
                 _logger.error(f"Error: {e}")
                 return False
