@@ -37,7 +37,6 @@ class JWTSignatureValidator(HTTPBearer):
         actual_data = base64url_encode(canonical_json).decode(
             "utf-8"
         )  # base64url-encoded JSON string
-        
 
         # Get JWT from header
         jwt_signature_data = request.headers.get("Authorization")
@@ -45,7 +44,9 @@ class JWTSignatureValidator(HTTPBearer):
         try:
             part1, _, part3 = jwt_signature_data.split(".")
         except ValueError:
-            _logger.error("Malformed detached JWT format. Expected format: part1..part3")
+            _logger.error(
+                "Malformed detached JWT format. Expected format: part1..part3"
+            )
             return False
 
         # Reconstruct full JWT
