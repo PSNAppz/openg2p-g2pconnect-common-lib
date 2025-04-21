@@ -70,7 +70,7 @@ class JWTSignatureValidator(HTTPBearer):
                 "domain": str(DomainEnum.AUTH),
             },
         }
-        _logger.debug(f"Payload: {payload}")
+        _logger.info(f"Payload: {payload}")
         # Send request to external service for verification
         async with httpx.AsyncClient() as client:
             response = await client.post(
