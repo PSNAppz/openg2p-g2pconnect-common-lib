@@ -79,7 +79,7 @@ class JWTSignatureValidator(HTTPBearer):
                 headers=headers,
             )
             try:
-                _logger.info(f"Response: {response.json()}")
+                _logger.info(f"Response from {_config.jwt_verify_url} is: {response.json()}")
                 return response.json()["response"]["signatureValid"]
             except Exception as e:
                 _logger.error(f"Error: {e}")
