@@ -62,7 +62,7 @@ class JWTSignatureValidator(HTTPBearer):
             "metadata": {},
             "request": {
                 "jwtSignatureData": reconstructed_jwt,
-                "actual_data": actual_data,
+                "actualData": actual_data,
                 "applicationId": _config.oauth_application_id,
                 "referenceId": reference_id,
                 "certificateData": "",
@@ -70,7 +70,6 @@ class JWTSignatureValidator(HTTPBearer):
                 "domain": str(DomainEnum.AUTH),
             },
         }
-        _logger.info(f"Payload: {payload}")
         # Send request to external service for verification
         async with httpx.AsyncClient() as client:
             response = await client.post(
@@ -79,7 +78,6 @@ class JWTSignatureValidator(HTTPBearer):
                 headers=headers,
             )
             try:
-                _logger.info(f"Response from {_config.jwt_verify_url} is: {response.json()}")
                 return response.json()["response"]["signatureValid"]
             except Exception as e:
                 _logger.error(f"Error: {e}")
