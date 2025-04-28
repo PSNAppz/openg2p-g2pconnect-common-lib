@@ -39,7 +39,7 @@ class JWTSignatureValidator(HTTPBearer):
         )  # base64url-encoded JSON string
 
         # Get JWT from header
-        jwt_signature_data = request.headers.get("Authorization")
+        jwt_signature_data = request.headers.get("Signature")
 
         try:
             part1, _, part3 = jwt_signature_data.split(".")
@@ -52,7 +52,7 @@ class JWTSignatureValidator(HTTPBearer):
         # Reconstruct full JWT
         reconstructed_jwt = f"{part1}.{actual_data}.{part3}"
 
-        reference_id = request_json.get("header", {}).get("sender_id")
+        reference_id = "PARTNER_" + request_json.get("header", {}).get("sender_id")
 
         # Prepare payload for external verification
         payload = {
