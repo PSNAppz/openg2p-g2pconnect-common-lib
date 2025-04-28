@@ -52,7 +52,10 @@ class JWTSignatureValidator(HTTPBearer):
         # Reconstruct full JWT
         reconstructed_jwt = f"{part1}.{actual_data}.{part3}"
 
-        reference_id = "PARTNER_" + request_json.get("header", {}).get("sender_id")
+        reference_id = (
+            "PARTNER_"
+            + request_json.get("header", {}).get("sender_id").replace("-", "_").upper()
+        )
 
         # Prepare payload for external verification
         payload = {
