@@ -11,18 +11,7 @@ on:
         required: true
         type: string
         default: latest
-      push-to-docker:
-        description: Build and Push Dockers
-        type: boolean
-        default: true
-      push-to-pypi:
-        description: Push modules to PyPI
-        type: boolean
-        default: true
-      push-to-stoplight:
-        description: Push API Docs to Stoplight
-        type: boolean
-        default: true
+
 jobs:
   tag-repo:
     name: Tag Repo
@@ -86,16 +75,3 @@ jobs:
           add: "**/*.py Dockerfile.* api-docs"
           push: false
           tag: ${{ inputs.new-tag }}
-
-      - name: Push module to PyPI - openg2p-g2pconnect-common-lib
-        if: ${{ inputs.push-to-pypi }}
-        uses: ./.github/actions/pypi-publish
-        with:
-          MODULE_PATH: openg2p-g2pconnect-common-lib
-          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-      - name: Push module to PyPI - openg2p-g2pconnect-mapper-lib
-        if: ${{ inputs.push-to-pypi }}
-        uses: ./.github/actions/pypi-publish
-        with:
-          MODULE_PATH: openg2p-g2pconnect-mapper-lib
-          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
