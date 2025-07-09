@@ -2,7 +2,7 @@ import base64
 import json
 import logging
 from contextvars import ContextVar
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 import httpx
 from fastapi import Request
@@ -18,8 +18,13 @@ _logger = logging.getLogger(_config.logging_default_logger_name)
 def base64url_encode(input: bytes) -> bytes:
     return base64.urlsafe_b64encode(input).replace(b"=", b"")
 
-jwt_validator_keymanager_token: ContextVar[str] = ContextVar("jwt_validator_keymanager_token", default=None)
-jwt_validator_keymanager_token_expiry: ContextVar[datetime] = ContextVar("jwt_validator_keymanager_token_expiry", default=None)
+
+jwt_validator_keymanager_token: ContextVar[str] = ContextVar(
+    "jwt_validator_keymanager_token", default=None
+)
+jwt_validator_keymanager_token_expiry: ContextVar[datetime] = ContextVar(
+    "jwt_validator_keymanager_token_expiry", default=None
+)
 
 
 class JWTSignatureValidator(HTTPBearer):
@@ -71,10 +76,13 @@ class JWTSignatureValidator(HTTPBearer):
         }
         # Send request to external service for verification
         async with httpx.AsyncClient() as client:
+            cookies = {}
+            if _config.keymanager_auth_enabled:
+                cookies["Authorization"] = await self.get_keymanager_auth_token()
             response = await client.post(
                 f"{_config.keymanager_api_base_url}/jwtVerify",
                 json=payload,
-                cookies={"Authorization": await self.get_keymanager_auth_token()},
+                cookies=cookies,
             )
             try:
                 return response.json()["response"]["signatureValid"]
@@ -97,6 +105,8 @@ class JWTSignatureValidator(HTTPBearer):
             response = await client.post(url, data=payload)
         response_data = response.json()
         expires_in = response_data.get("expires_in", 900)
-        jwt_validator_keymanager_token_expiry.set(datetime.now(timezone.utc) + timedelta(seconds=expires_in))
+        jwt_validator_keymanager_token_expiry.set(
+            datetime.now(timezone.utc) + timedelta(seconds=expires_in)
+        )
         jwt_validator_keymanager_token.set(response_data["access_token"])
         return response_data["access_token"]
