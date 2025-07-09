@@ -1,14 +1,14 @@
 import base64
 import json
 import logging
-from datetime import datetime
+from contextvars import ContextVar
+from datetime import datetime, timedelta, timezone
 
 import httpx
 from fastapi import Request
 from fastapi.security import HTTPBearer
 
 from .config import Settings
-from .oauth_token import OAuthTokenService
 from .schemas import DomainEnum
 
 _config = Settings.get_config(strict=False)
@@ -19,15 +19,16 @@ def base64url_encode(input: bytes) -> bytes:
     return base64.urlsafe_b64encode(input).replace(b"=", b"")
 
 
+jwt_validator_keymanager_token: ContextVar[str] = ContextVar(
+    "jwt_validator_keymanager_token", default=None
+)
+jwt_validator_keymanager_token_expiry: ContextVar[datetime] = ContextVar(
+    "jwt_validator_keymanager_token_expiry", default=None
+)
+
+
 class JWTSignatureValidator(HTTPBearer):
     async def __call__(self, request: Request) -> bool:
-        oauth_token = await OAuthTokenService.get_component().get_oauth_token()
-        headers = {
-            "accept": "*/*",
-            "Content-Type": "application/json",
-            "Cookie": f"Authorization={oauth_token}",
-        }
-
         # Get request body and decode to JSON
         request_body = await request.body()
         request_json = json.loads(request_body)
@@ -43,7 +44,7 @@ class JWTSignatureValidator(HTTPBearer):
 
         try:
             part1, _, part3 = jwt_signature_data.split(".")
-        except ValueError:
+        except Exception:
             _logger.error(
                 "Malformed detached JWT format. Expected format: part1..part3"
             )
@@ -66,7 +67,7 @@ class JWTSignatureValidator(HTTPBearer):
             "request": {
                 "jwtSignatureData": reconstructed_jwt,
                 "actualData": actual_data,
-                "applicationId": _config.oauth_application_id,
+                "applicationId": _config.jwt_validate_keymanager_app_id,
                 "referenceId": reference_id,
                 "certificateData": "",
                 "validateTrust": False,
@@ -75,13 +76,37 @@ class JWTSignatureValidator(HTTPBearer):
         }
         # Send request to external service for verification
         async with httpx.AsyncClient() as client:
+            cookies = {}
+            if _config.keymanager_auth_enabled:
+                cookies["Authorization"] = await self.get_keymanager_auth_token()
             response = await client.post(
-                _config.jwt_verify_url,
+                f"{_config.keymanager_api_base_url}/jwtVerify",
                 json=payload,
-                headers=headers,
+                cookies=cookies,
             )
             try:
                 return response.json()["response"]["signatureValid"]
             except Exception as e:
                 _logger.error(f"Error: {e}")
                 return False
+
+    async def get_keymanager_auth_token(self):
+        km_token = jwt_validator_keymanager_token.get()
+        km_t_exp = jwt_validator_keymanager_token_expiry.get()
+        if km_token and km_t_exp and km_t_exp > datetime.now(timezone.utc):
+            return km_token
+        url = _config.keymanager_auth_url
+        payload = {
+            "client_id": _config.keymanager_auth_client_id,
+            "client_secret": _config.keymanager_auth_client_secret,
+            "grant_type": "client_credentials",
+        }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, data=payload)
+        response_data = response.json()
+        expires_in = response_data.get("expires_in", 900)
+        jwt_validator_keymanager_token_expiry.set(
+            datetime.now(timezone.utc) + timedelta(seconds=expires_in)
+        )
+        jwt_validator_keymanager_token.set(response_data["access_token"])
+        return response_data["access_token"]
