@@ -222,9 +222,7 @@ def setup_update():
 @pytest.mark.asyncio
 async def test_update_request_successful(setup_update):
     mock_update_response, mock_update_request, response_json = setup_update
-    with patch(
-        "openg2p_g2pconnect_mapper_lib.client.update.httpx.AsyncClient.post"
-    ) as mock_post:
+    with patch("openg2p_g2pconnect_mapper_lib.client.update.httpx.AsyncClient.post") as mock_post:
         mock_post.return_value.json = MagicMock(return_value=response_json)
 
         mapper_service = MapperUpdateClient()
@@ -234,9 +232,7 @@ async def test_update_request_successful(setup_update):
         update_response = await mapper_service.update_request(
             mock_update_request, update_url="mock_url", headers=headers
         )
-        assert (
-            update_response.header.message_id == mock_update_response.header.message_id
-        )
+        assert update_response.header.message_id == mock_update_response.header.message_id
         assert isinstance(update_response, UpdateResponse)
 
 
@@ -318,9 +314,7 @@ def setup_resolve():
 @pytest.mark.asyncio
 async def test_resolve_request_successful(setup_resolve):
     mock_resolve_response, mock_resolve_request, response_json = setup_resolve
-    with patch(
-        "openg2p_g2pconnect_mapper_lib.client.resolve.httpx.AsyncClient.post"
-    ) as mock_post:
+    with patch("openg2p_g2pconnect_mapper_lib.client.resolve.httpx.AsyncClient.post") as mock_post:
         mock_post.return_value.json = MagicMock(return_value=response_json)
 
         mapper_service = MapperResolveClient()
@@ -330,10 +324,7 @@ async def test_resolve_request_successful(setup_resolve):
         resolve_response = await mapper_service.resolve_request(
             mock_resolve_request, resolve_url="mock_url", headers=headers
         )
-        assert (
-            resolve_response.header.message_id
-            == mock_resolve_response.header.message_id
-        )
+        assert resolve_response.header.message_id == mock_resolve_response.header.message_id
         assert isinstance(resolve_response, ResolveResponse)
 
 
@@ -415,9 +406,7 @@ def setup_unlink():
 @pytest.mark.asyncio
 async def test_unlink_request_successful(setup_unlink):
     mock_unlink_response, mock_unlink_request, response_json = setup_unlink
-    with patch(
-        "openg2p_g2pconnect_mapper_lib.client.unlink.httpx.AsyncClient.post"
-    ) as mock_post:
+    with patch("openg2p_g2pconnect_mapper_lib.client.unlink.httpx.AsyncClient.post") as mock_post:
         mock_post.return_value.json = MagicMock(return_value=response_json)
 
         mapper_service = MapperUnlinkClient()
@@ -427,7 +416,5 @@ async def test_unlink_request_successful(setup_unlink):
         unlink_response = await mapper_service.unlink_request(
             mock_unlink_request, unlink_url="mock_url", headers=headers
         )
-        assert (
-            unlink_response.header.message_id == mock_unlink_response.header.message_id
-        )
+        assert unlink_response.header.message_id == mock_unlink_response.header.message_id
         assert isinstance(unlink_response, UnlinkResponse)
