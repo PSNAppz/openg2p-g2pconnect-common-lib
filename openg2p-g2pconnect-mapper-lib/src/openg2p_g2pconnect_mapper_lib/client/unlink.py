@@ -1,39 +1,72 @@
 import logging
+from functools import cached_property
 
 import httpx
+import orjson
 from openg2p_fastapi_common.errors.base_exception import BaseAppException
 from openg2p_fastapi_common.service import BaseService
+from openg2p_g2pconnect_common_lib.jwt_helper_service import JWTHelperService
 
+from ..config import Settings
 from ..schemas import UnlinkRequest, UnlinkResponse
 
-_logger = logging.getLogger("mapper_client_unlink")
+_config = Settings.get_config(strict=False)
+_logger = logging.getLogger(_config.logging_default_logger_name)
 
 
 class MapperUnlinkClient(BaseService):
-    async def unlink_request(
+    def __init__(
         self,
-        unlink_request: UnlinkRequest,
-        headers: dict,
-        unlink_url: str = None,
-        timeout=60,
-    ) -> UnlinkResponse:
+        url: str = _config.mapper_unlink_url,
+        api_timeout: int = _config.mapper_api_timeout,
+        api_sign_enabled: bool = _config.mapper_api_sign_enabled,
+        api_sign_keymanager_app_id: str = _config.mapper_api_sign_keymanager_app_id,
+        api_sign_keymanager_ref_id: str = _config.mapper_api_sign_keymanager_ref_id,
+        **kw
+    ):
+        super().__init__(**kw)
+        self.url = url
+        self.api_timeout = api_timeout
+        self.api_sign_enabled = api_sign_enabled
+        self.api_sign_keymanager_app_id = api_sign_keymanager_app_id
+        self.api_sign_keymanager_ref_id = api_sign_keymanager_ref_id
+
+        self.http_client = httpx.AsyncClient(timeout=self.api_timeout)
+
+    @cached_property
+    def jwt_helper(self):
+        return JWTHelperService.get_component()
+
+    async def unlink_request(self, request: UnlinkRequest, headers: dict | None = None) -> UnlinkResponse:
         try:
-            client = httpx.AsyncClient()
-            res = await client.post(
-                unlink_url,
-                content=unlink_request.model_dump_json(),
-                headers=headers,
-                timeout=timeout,
+            payload = request.model_dump(mode="json")
+
+            orig_headers = {"content-type": "application/json"}
+            if self.api_sign_enabled:
+                orig_headers["Signature"] = await self.jwt_helper.create_jwt_token(
+                    payload,
+                    keymanager_app_id=self.api_sign_keymanager_app_id,
+                    keymanager_ref_id=self.api_sign_keymanager_ref_id,
+                )
+            if headers:
+                orig_headers.update(headers)
+
+            res = await self.http_client.post(
+                self.url,
+                content=orjson.dumps(payload, option=orjson.OPT_SORT_KEYS),
+                headers=orig_headers,
             )
-            await client.aclose()
             res.raise_for_status()
-            unlink_response: UnlinkResponse = UnlinkResponse.model_validate(res.json())
-            return unlink_response
+            return UnlinkResponse.model_validate(res.json())
         except httpx.HTTPStatusError as e:
-            _logger.error(
-                f"Error in unlink request: {e.response.status_code} {e.response.text}"
-            )
+            _logger.exception("Http Error in unlink request")
             raise BaseAppException(
                 message="Error in unlink request",
                 code=str(e.response.status_code),
+            ) from e
+        except Exception as e:
+            _logger.exception("Unknown Error in unlink request")
+            raise BaseAppException(
+                message="Unknown Error in unlink request",
+                code="500",
             ) from e
