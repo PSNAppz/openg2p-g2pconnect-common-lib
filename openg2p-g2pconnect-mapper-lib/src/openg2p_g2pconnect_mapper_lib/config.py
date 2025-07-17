@@ -24,11 +24,11 @@ class Settings(BaseSettings):
     def validate_mapper_configs(self) -> "Settings":
         base_url = self.mapper_api_url.rstrip("/")
         if not self.mapper_link_url:
-            self.mapper_link_url = "/".join(base_url, self.mapper_link_path.lstrip("/"))
+            self.mapper_link_url = "/".join([base_url, self.mapper_link_path.lstrip("/")])
         if not self.mapper_update_url:
-            self.mapper_update_url = "/".join(base_url, self.mapper_update_path.lstrip("/"))
+            self.mapper_update_url = "/".join([base_url, self.mapper_update_path.lstrip("/")])
         if not self.mapper_resolve_url:
-            self.mapper_resolve_url = "/".join(base_url, self.mapper_resolve_path.lstrip("/"))
+            self.mapper_resolve_url = "/".join([base_url, self.mapper_resolve_path.lstrip("/")])
         if not self.mapper_unlink_url:
-            self.mapper_unlink_url = "/".join(base_url, self.mapper_unlink_path.lstrip("/"))
+            self.mapper_unlink_url = "/".join([base_url, self.mapper_unlink_path.lstrip("/")])
         return self
