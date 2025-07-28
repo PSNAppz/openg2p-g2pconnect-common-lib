@@ -1,5 +1,4 @@
 import logging
-from functools import cached_property
 
 import orjson
 from fastapi import Request
@@ -13,9 +12,7 @@ _logger = logging.getLogger(_config.logging_default_logger_name)
 
 
 class JWTSignatureValidator(HTTPBearer):
-    @cached_property
-    def jwt_helper(self) -> JWTHelperService:
-        return JWTHelperService.get_component()
+    jwt_helper: JWTHelperService = JWTHelperService.get_cached_component()
 
     async def __call__(self, request: Request) -> bool:
         # Get request body and decode to JSON

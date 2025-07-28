@@ -20,22 +20,20 @@ class MapperUpdateClient(BaseService):
         url: str = _config.mapper_update_url,
         api_timeout: int = _config.mapper_api_timeout,
         api_sign_enabled: bool = _config.mapper_api_sign_enabled,
-        api_sign_keymanager_app_id: str = _config.mapper_api_sign_keymanager_app_id,
-        api_sign_keymanager_ref_id: str = _config.mapper_api_sign_keymanager_ref_id,
+        api_sign_jwt_helper_name: str = _config.mapper_api_sign_jwt_helper_name,
         **kw
     ):
         super().__init__(**kw)
         self.url = url
         self.api_timeout = api_timeout
         self.api_sign_enabled = api_sign_enabled
-        self.api_sign_keymanager_app_id = api_sign_keymanager_app_id
-        self.api_sign_keymanager_ref_id = api_sign_keymanager_ref_id
+        self.api_sign_jwt_helper_name = api_sign_jwt_helper_name
 
         self.http_client = httpx.AsyncClient(timeout=self.api_timeout)
 
     @cached_property
     def jwt_helper(self):
-        return JWTHelperService.get_component()
+        return JWTHelperService.get_component(name=self.api_sign_jwt_helper_name)
 
     async def update_request(self, request: UpdateRequest, headers: dict | None = None) -> UpdateResponse:
         try:
@@ -43,11 +41,7 @@ class MapperUpdateClient(BaseService):
 
             orig_headers = {"content-type": "application/json"}
             if self.api_sign_enabled:
-                orig_headers["Signature"] = await self.jwt_helper.create_jwt_token(
-                    payload,
-                    keymanager_app_id=self.api_sign_keymanager_app_id,
-                    keymanager_ref_id=self.api_sign_keymanager_ref_id,
-                )
+                orig_headers["Signature"] = await self.jwt_helper.create_jwt_token(payload)
             if headers:
                 orig_headers.update(headers)
 

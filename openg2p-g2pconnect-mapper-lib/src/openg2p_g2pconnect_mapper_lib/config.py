@@ -17,8 +17,7 @@ class Settings(BaseSettings):
     mapper_unlink_url: str = ""
     mapper_api_timeout: int = 60
     mapper_api_sign_enabled: bool = True
-    mapper_api_sign_keymanager_app_id: str = ""
-    mapper_api_sign_keymanager_ref_id: str = ""
+    mapper_api_sign_jwt_helper_name: str = "default-jwt-helper"
 
     @model_validator(mode="after")
     def validate_mapper_configs(self) -> "Settings":
