@@ -18,7 +18,7 @@ class JWTValidationHelper(BaseService):
             payload=payload,
             km_app_id=_config.jwt_validate_keymanager_app_id,
             km_ref_id=self.get_partner_id_from_payload(payload),
-            **kw
+            **kw,
         )
 
     def get_partner_id_from_payload(self, payload: dict, **kw) -> str:

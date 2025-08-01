@@ -21,7 +21,7 @@ class MapperLinkClient(BaseService):
         api_timeout: int = _config.mapper_link_client_api_timeout,
         api_sign_enabled: bool = _config.mapper_link_client_api_sign_enabled,
         api_sign_crypto_helper_name: str = _config.mapper_link_client_crypto_helper_name,
-        **kw
+        **kw,
     ):
         super().__init__(**kw)
         self.url = url
