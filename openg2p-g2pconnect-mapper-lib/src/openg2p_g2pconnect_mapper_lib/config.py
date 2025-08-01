@@ -1,5 +1,3 @@
-from typing import Self
-
 from openg2p_g2pconnect_common_lib.config import Settings as BaseSettings
 from pydantic import model_validator
 from pydantic_settings import SettingsConfigDict
@@ -35,7 +33,7 @@ class Settings(BaseSettings):
     mapper_unlink_client_crypto_helper_name: str = ""
 
     @model_validator(mode="after")
-    def validate_mapper_configs(self) -> Self:
+    def validate_mapper_configs(self):
         base_url = self.mapper_client_api_base_url.rstrip("/")
         if not self.mapper_link_client_url:
             self.mapper_link_client_url = "/".join([base_url, self.mapper_link_client_path.lstrip("/")])
