@@ -2,7 +2,8 @@ from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from openg2p_g2pconnect_common_lib.jwt_helper_service import JWTHelperService
+from openg2p_fastapi_common.utils.crypto import CryptoHelper
+from openg2p_g2pconnect_common_lib.jwt_validation_helper import JWTValidationHelper
 from openg2p_g2pconnect_common_lib.schemas import StatusEnum
 from openg2p_g2pconnect_common_lib.schemas.requests import RequestHeader
 from openg2p_g2pconnect_common_lib.schemas.sync_schemas import SyncResponseHeader
@@ -121,6 +122,8 @@ def setup_link():
             ],
         ),
     )
+    JWTValidationHelper()
+    CryptoHelper()
     return mock_link_response, mock_link_request, response_json
 
 
@@ -132,13 +135,11 @@ async def test_link_request_successful(setup_link):
         patch(
             "openg2p_g2pconnect_mapper_lib.client.link.httpx.AsyncClient.post", new_callable=AsyncMock
         ) as mock_post,
-        patch(
-            "openg2p_g2pconnect_common_lib.jwt_helper_service.JWTHelperService.create_jwt_token"
-        ) as mock_create_jwt,
+        patch("openg2p_fastapi_common.utils.crypto.CryptoHelper.create_jwt_token") as mock_create_jwt,
     ):
         mock_post.return_value.json = MagicMock(return_value=response_json)
         mock_create_jwt.return_value = "mock_jwt"
-        JWTHelperService()
+
         mapper_service = MapperLinkClient()
         link_response = await mapper_service.link_request(mock_link_request)
 
@@ -228,13 +229,10 @@ async def test_update_request_successful(setup_update):
         patch(
             "openg2p_g2pconnect_mapper_lib.client.link.httpx.AsyncClient.post", new_callable=AsyncMock
         ) as mock_post,
-        patch(
-            "openg2p_g2pconnect_common_lib.jwt_helper_service.JWTHelperService.create_jwt_token"
-        ) as mock_create_jwt,
+        patch("openg2p_fastapi_common.utils.crypto.CryptoHelper.create_jwt_token") as mock_create_jwt,
     ):
         mock_post.return_value.json = MagicMock(return_value=response_json)
         mock_create_jwt.return_value = "mock_jwt"
-        JWTHelperService()
 
         mapper_service = MapperUpdateClient()
         update_response = await mapper_service.update_request(mock_update_request)
@@ -324,13 +322,10 @@ async def test_resolve_request_successful(setup_resolve):
         patch(
             "openg2p_g2pconnect_mapper_lib.client.link.httpx.AsyncClient.post", new_callable=AsyncMock
         ) as mock_post,
-        patch(
-            "openg2p_g2pconnect_common_lib.jwt_helper_service.JWTHelperService.create_jwt_token"
-        ) as mock_create_jwt,
+        patch("openg2p_fastapi_common.utils.crypto.CryptoHelper.create_jwt_token") as mock_create_jwt,
     ):
         mock_post.return_value.json = MagicMock(return_value=response_json)
         mock_create_jwt.return_value = "mock_jwt"
-        JWTHelperService()
 
         mapper_service = MapperResolveClient()
         resolve_response = await mapper_service.resolve_request(mock_resolve_request)
@@ -420,13 +415,10 @@ async def test_unlink_request_successful(setup_unlink):
         patch(
             "openg2p_g2pconnect_mapper_lib.client.link.httpx.AsyncClient.post", new_callable=AsyncMock
         ) as mock_post,
-        patch(
-            "openg2p_g2pconnect_common_lib.jwt_helper_service.JWTHelperService.create_jwt_token"
-        ) as mock_create_jwt,
+        patch("openg2p_fastapi_common.utils.crypto.CryptoHelper.create_jwt_token") as mock_create_jwt,
     ):
         mock_post.return_value.json = MagicMock(return_value=response_json)
         mock_create_jwt.return_value = "mock_jwt"
-        JWTHelperService()
 
         mapper_service = MapperUnlinkClient()
         unlink_response = await mapper_service.unlink_request(mock_unlink_request)

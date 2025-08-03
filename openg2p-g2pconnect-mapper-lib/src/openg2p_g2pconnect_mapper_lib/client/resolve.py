@@ -5,7 +5,7 @@ import httpx
 import orjson
 from openg2p_fastapi_common.errors.base_exception import BaseAppException
 from openg2p_fastapi_common.service import BaseService
-from openg2p_g2pconnect_common_lib.jwt_helper_service import JWTHelperService
+from openg2p_fastapi_common.utils.crypto import CryptoHelper
 
 from ..config import Settings
 from ..schemas import ResolveRequest, ResolveResponse
@@ -17,25 +17,23 @@ _logger = logging.getLogger(_config.logging_default_logger_name)
 class MapperResolveClient(BaseService):
     def __init__(
         self,
-        url: str = _config.mapper_resolve_url,
-        api_timeout: int = _config.mapper_api_timeout,
-        api_sign_enabled: bool = _config.mapper_api_sign_enabled,
-        api_sign_keymanager_app_id: str = _config.mapper_api_sign_keymanager_app_id,
-        api_sign_keymanager_ref_id: str = _config.mapper_api_sign_keymanager_ref_id,
-        **kw
+        url: str = _config.mapper_resolve_client_url,
+        api_timeout: int = _config.mapper_resolve_client_api_timeout,
+        api_sign_enabled: bool = _config.mapper_resolve_client_api_sign_enabled,
+        api_sign_crypto_helper_name: str = _config.mapper_resolve_client_crypto_helper_name,
+        **kw,
     ):
         super().__init__(**kw)
         self.url = url
         self.api_timeout = api_timeout
         self.api_sign_enabled = api_sign_enabled
-        self.api_sign_keymanager_app_id = api_sign_keymanager_app_id
-        self.api_sign_keymanager_ref_id = api_sign_keymanager_ref_id
+        self.api_sign_crypto_helper_name = api_sign_crypto_helper_name
 
         self.http_client = httpx.AsyncClient(timeout=self.api_timeout)
 
     @cached_property
-    def jwt_helper(self):
-        return JWTHelperService.get_component()
+    def crypto_helper(self):
+        return CryptoHelper.get_component(name=self.api_sign_crypto_helper_name)
 
     async def resolve_request(self, request: ResolveRequest, headers: dict | None = None) -> ResolveResponse:
         try:
@@ -43,11 +41,7 @@ class MapperResolveClient(BaseService):
 
             orig_headers = {"content-type": "application/json"}
             if self.api_sign_enabled:
-                orig_headers["Signature"] = await self.jwt_helper.create_jwt_token(
-                    payload,
-                    keymanager_app_id=self.api_sign_keymanager_app_id,
-                    keymanager_ref_id=self.api_sign_keymanager_ref_id,
-                )
+                orig_headers["Signature"] = await self.crypto_helper.create_jwt_token(payload)
             if headers:
                 orig_headers.update(headers)
 
