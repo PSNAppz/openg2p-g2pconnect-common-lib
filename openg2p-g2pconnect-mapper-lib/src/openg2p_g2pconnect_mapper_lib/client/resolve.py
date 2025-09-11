@@ -44,9 +44,6 @@ class MapperResolveClient(BaseService):
                 orig_headers["Signature"] = await self.crypto_helper.create_jwt_token(payload)
             if headers:
                 orig_headers.update(headers)
-            _logger.info(
-                f"Content to be sent to mapper resolve client: {orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)}"
-            )
             res = await self.http_client.post(
                 self.url,
                 content=orjson.dumps(payload, option=orjson.OPT_SORT_KEYS),
