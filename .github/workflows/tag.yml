@@ -73,5 +73,15 @@ jobs:
           default_author: github_actions
           message: "Preparing new tag ${{ inputs.new-tag }}"
           add: "."
-          push: false
-          tag: ${{ inputs.new-tag }}
+          push: true
+
+      - name: Create and push tag
+        run: |
+          set -e
+          TAG="${{ inputs.new-tag }}"
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+            echo "Tag $TAG already exists on remote; skipping."
+            exit 0
+          fi
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "refs/tags/$TAG"
